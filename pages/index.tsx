@@ -1,25 +1,24 @@
 import type { GetServerSideProps, NextPage } from 'next';
-import { urqlClient } from '../libs/gql-requests';
-import { PostIndexPageDocument } from '../src/graphql/generated.graphql';
 import {
   Avatar,
   Box,
+  Chip,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Stack,
+  Typography,
 } from '@mui/material';
+import { urqlClient } from '../libs/gql-requests';
+import { PostIndexPageDocument } from '../src/graphql/generated.graphql';
+import { PostModel } from '../src/graphql/generated.graphql';
 
 type Props = {
-  posts: {
-    id: string;
-    title: string;
-  }[];
+  posts: PostModel[];
 };
 
 const Home: NextPage<Props> = (props) => {
-  console.log(props.posts);
   return (
     <Stack
       sx={{
@@ -30,9 +29,18 @@ const Home: NextPage<Props> = (props) => {
         {props.posts.map((post) => (
           <ListItem key={post.id}>
             <ListItemAvatar>
-              <Avatar>絵</Avatar>
+              <Avatar sx={{ bgcolor: 'grey[200]' }}> {post.emoji}</Avatar>
             </ListItemAvatar>
-            <ListItemText primary={post.title} secondary="公開日" />
+            <ListItemText
+              disableTypography
+              primary={post.title}
+              secondary={
+                <Stack direction="row" spacing={2}>
+                  <Chip size="small" color="warning" label={post.type} />
+                  <Typography>{post.publishDate}</Typography>
+                </Stack>
+              }
+            />
           </ListItem>
         ))}
       </List>
